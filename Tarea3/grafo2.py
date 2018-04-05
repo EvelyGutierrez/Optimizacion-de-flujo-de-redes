@@ -79,7 +79,7 @@ class Grafo:
                 num += 1              
             pie(self.destino, aristas)
 
-    def floyd_warshall(self): 
+    def FloydWarshall(self): 
         d = {}
         for nodo in range(self.n - 1):
             d[(nodo, nodo)] = 0 # distancia reflexiva es cero
@@ -127,7 +127,7 @@ class Grafo:
  
  
  
-    def ford_fulkerson(self, s, t): # algoritmo de Ford y Fulkerson
+    def FordFulkerson(self, s, t): # algoritmo de Ford y Fulkerson
         if s == t:
             return 0
         maximo = 0
@@ -148,3 +148,76 @@ class Grafo:
             maximo += incr
         return maximo
         print(maximo)
+
+
+
+    def GraficoCajaBigote(self):
+        import matplotlib.pyplot as plt 
+        
+        # Ejemplo de grafico de cajas en python
+
+        datos_1 = 1
+        datos_2 = 10
+        datos_3 = 20
+        datos_4 = 5
+
+        datos_graf = [datos_1, datos_2, datos_3, datos_4]
+
+        # Creando el objeto figura
+        fig = plt.figure(1, figsize=(9, 6))
+
+        # Creando el subgrafico
+        ax = fig.add_subplot(111)
+
+        # creando el grafico de cajas
+        bp = ax.boxplot(datos_graf)
+
+        # visualizar mas facile los atípicos
+        for flier in bp['fliers']:
+            flier.set(marker='o', color='red', alpha=0.5)
+        # los puntos aislados son valores atípicos
+
+    
+        #plt.ion()  # Nos ponemos en modo interactivo
+        #alt_esp = np.random.randn(100)+165 + np.random.randn(100) * 10  # Creamos unos valores para la altura de 100 españolas
+        #alt_ale = np.random.randn(100)+172 + np.random.randn(100) * 12  # Creamos unos valores para la altura de 100 alemanas
+        #alt_tai = np.random.randn(100)+159 + np.random.randn(100) * 9   # Creamos unos valores para la altura de 100 tailandesas
+        #plt.boxplot([alt_esp, alt_ale, alt_tai], sym = 'ko', whis = 1.5)  # El valor por defecto para los bigotes es 1.5*IQR pero lo escribimos explícitamente
+        #plt.xticks([1,2,3], ['Esp', 'Ale', 'Tai'], size = 'small', color = 'k')  # Colocamos las etiquetas para cada distribución
+        #plt.ylabel(u'Altura (cm)')
+
+
+
+    def GraficaErrorB(self):
+        # Definir tipo de salida para gnuplot
+        print("set term postscript eps color solid rounded blacktext “Helvetica” 20 enhanced")
+        # Nombre de los ejes
+        print("set xlabel “x”")
+        print("set ylabel “y”")
+
+        # Establecer rejilla
+        print("set grid")
+
+        # Establecer rango de los datos para el eje x e y
+        print("set yrange [0:40]")
+        print("set xrange [0:40]")
+
+        # Sitúa la leyenda abajo a la derecha
+        print("set key right bottom")
+
+        # Nombre del fichero en el que guardaremos la gráfica
+        print("set output ‘ejemplo_barras_errores.eps’")
+
+        # Función de ajuste para los datos
+        f = 20 + 10
+
+        # Ajuste de los datos según la función f
+        print("fit f(x) ‘datos.txt’ u 1:2 via a, b")
+
+        # Pintar la función, por un lado se pinta el ajuste y por otro los datos
+        print("plot {:f} lc rgb “blue”, \
+        ‘datos.txt’ u 1:2:3:4 with xyerrorbars lc rgb “red” notitle, \
+        ‘datos.txt’ u 1:2 with points pointtype 7 lc rgb “white” notitle, \
+        ‘datos.txt’ u 1:2 with points pointtype 6 lc rgb “red” title ‘x:y’".format(f))
+
+    
