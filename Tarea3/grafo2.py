@@ -1,6 +1,10 @@
 print("hola")
 from random import random, choice
 from sys import stdout
+import time
+
+time_ejecucion = 0
+print(time_ejecucion)
 
 colores = ["black", "blue", "pink", "orange", "red"]
 pesos = [1,2,3,4,5,6,7,8,9,10]
@@ -82,7 +86,7 @@ class Grafo:
                 num += 1              
             pie(self.destino, aristas)
 
-    def FloydWarshall(self): 
+    def FloydWarshall(self):
         d = {}
         for nodo in range(self.n - 1):
             d[(nodo, nodo)] = 0 # distancia reflexiva es cero
@@ -101,6 +105,7 @@ class Grafo:
                         c = di + ih # largo del camino via "i"
                         if (desde, hasta) not in d or c < d[(desde, hasta)]:
                             d[(desde, hasta)] = c # mejora al camino actual
+                
         return d
 
 
@@ -149,7 +154,26 @@ class Grafo:
                 f[(u, v)] = inverso - incr
                 u = v
             maximo += incr
+        
         return maximo
         print(maximo)
 
+    def TiempoEjecucion():
+        t0 = time.clock()
+        for i in xrange(10000000):
+            pass
+        time_ejecucion = time.clock() - t0 
+        print("%.2f sec" % (time.clock() - t0))
+        return time_ejecucion
+        
+       
+    def test(self,s,t):
+        for i in range(10000):
+            self.FordFulkerson(self,s,t)
+            
+        start_time = time()
+        test()
+        elapsed_time = time() - start_time
+        print("Elapsed time: %.10f seconds." % elapsed_time)
 
+print(time_ejecucion)
