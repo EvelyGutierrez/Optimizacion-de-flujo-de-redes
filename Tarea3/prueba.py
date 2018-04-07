@@ -5,15 +5,14 @@ print("-------------------GRAFOS------------------")
 
 n = 20
 tiempoTotal = []
+resultadosFF = []
 cantidadCorridas = 10
 
 for t in range(cantidadCorridas):
     G1 = Grafo()    
     G1.creaNodos(n)
     G1.imprimir("prueba.txt")
-    E = G1.conecta(0.6)
-    print("tamanno de E (conjunto de conexiones): ")
-    print(E)
+    E = G1.conecta(0.6)    
     G1.grafica("prueba.plot")
     d = G1.FloydWarshall()
     print("Resultado de FloydWarshall en tamanno del conjunto :")
@@ -30,5 +29,9 @@ for t in range(cantidadCorridas):
     print("Valores de N mas 10 :")
     print(n)
     tiempoTotal.append(segundos)
-    
+    resultadosFF.append(a)
+
+print("Tiempos de ejecucion: ")    
 print(tiempoTotal)
+print("Flujos Maximos por corridas: ")
+print(resultadosFF)
