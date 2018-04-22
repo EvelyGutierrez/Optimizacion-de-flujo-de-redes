@@ -5,7 +5,7 @@ import time
 import math
 
 colores = ["black", "blue", "pink", "orange", "red"]
-pesos = [1,2,3,4,5,6,7,8,9,10]
+pesos = [1,2,3]
 
 def cabecera(aristas, eps=False):
     if eps:
@@ -32,10 +32,13 @@ class Grafo:
         self.nodos = set()
         self.destino = None
         self.vecinos = dict()
+        self.vecinos2 = dict()
         self.posicion = dict()
         self.tamano = dict()
         self.i = None
         self.aristas = dict()
+        self.d = None
+        self.sumatoria = None
         
 
     def creaNodos(self, orden): # creando los nodos
@@ -51,102 +54,6 @@ class Grafo:
                print(self.x[nodo], self.y[nodo], file=archivo)
         print(self.destino)
 
-    def conecta(self, prob):
-        self.i = 1
-        for nodo in range(self.n - 1):
-            for otro in range(nodo + 1, self.n):           
-                if random() < prob:                    
-                    peso = choice(pesos)
-                    color = choice(colores)                    
-                    if peso > 0:
-                        self.E.append((self.i, nodo, otro, peso, color))
-                        self.i += 1
-                        if not nodo in self.vecinos: # vecindad de nodo
-                            self.vecinos[nodo] = set()
-                        if not otro in self.vecinos: # vecindad de otro
-                            self.vecinos[otro] = set()    
-                        self.vecinos[nodo].add((otro, peso))
-                        self.vecinos[otro].add((nodo, peso))
-        return self.E                                   
-
-
-    def FloydWarshall(self):
-        d = {}
-        for nodo in range(self.n - 1):
-            d[(nodo, nodo)] = 0 # distancia reflexiva es cero
-            for (vecino, peso) in self.vecinos[nodo]: # para vecinos, la distancia es el peso
-                d[(nodo, vecino)] = peso
-        for intermedio in self.vecinos:
-            for desde in self.vecinos:
-                for hasta in self.vecinos:
-                    di = None
-                    if (desde, intermedio) in d:
-                        di = d[(desde, intermedio)]
-                    ih = None
-                    if (intermedio, hasta) in d:
-                        ih = d[(intermedio, hasta)]
-                    if di is not None and ih is not None:
-                        c = di + ih # largo del camino via "i"
-                        if (desde, hasta) not in d or c < d[(desde, hasta)]:
-                            d[(desde, hasta)] = c # mejora al camino actual
-
-           
-        return d
-
-
-# u son mis vecinos
-# v son mis nodos
-# w 
-
-
-    def camino(self, s, t, f): # construcciÃ³n de un camino aumentante
-        cola = [s]
-        usados = set()
-        camino = dict()
-        while len(cola) > 0:
-            u = cola.pop(0)
-            usados.add(u)
-            for (i,w, v, p, c) in self.E:
-                if w == u and v not in cola and v not in usados:
-                    actual = f.get((u, v), 0)
-                    dif = p - actual
-                    if dif > 0:
-                        cola.append(v)
-                        camino[v] = (u, dif)
-        if t in usados:
-            return camino
-        else: # no se alcanzÃ³
-            return None
- 
- 
- 
-    def FordFulkerson(self, s, t): # algoritmo de Ford y Fulkerson
-        if s == t:
-            return 0
-        maximo = 0
-        f = dict()
-        while True:
-            aum = self.camino(s, t, f)
-            if aum is None:
-                break # ya no hay
-            incr = min(aum.values(), key = (lambda k: k[1]))[1]
-            u = t
-            while u in aum:
-                v = aum[u][0]
-                actual = f.get((v, u), 0) # cero si no hay
-                inverso = f.get((u, v), 0)
-                f[(v, u)] = actual + incr
-                f[(u, v)] = inverso - incr
-                u = v
-            maximo += incr
-        
-        return maximo
-       
-
-
-    def avgdist(self):
-        d = self.FloydWarshall()
-        return sum(d.values())/ len(d)
 
     def factorial(self, *n):
         for x in n:
@@ -164,18 +71,20 @@ class Grafo:
             self.agrega(v)
         if not u in self.nodos:
             self.agrega(u)
-        self.vecinos[u].add(v)
+        
         self.E.append((self.i, v, u, peso, color))      
-        
-        self.vecinos[v].add(u)
-        
+        self.vecinos[u].add((int(v), peso))
+        self.vecinos2[u].add(int(v))
+        self.vecinos[v].add((int(u), peso))
+        self.vecinos2[v].add(int(u))
             
     def agrega(self, v, posicion = (0,0)):
         self.nodos.add(v)
+        
         self.posicion[v] = posicion
         if not v in self.vecinos:
             self.vecinos[v] = set()
-            
+            self.vecinos2[v] = set()
 
     def GuardaCirculo(self, dest, k, N, prob, r, xo, yo): #Para crear vertices que formen un circulo y guardarlos en un .txt
         self.destino = dest
@@ -192,17 +101,17 @@ class Grafo:
                            
             for a in range(N):
                 for j in range(k):
-                    print("entro")
+                    
                     jj = (a+j+1)%n            
                     self.ConectaAristas(str(a),str(jj))
-                    self.i += 1
-                  
-                  
-                       
-        #print(self.destino)
-        #print(self.nodos)
-        print(self.x)
-        print(self.y)
+                    self.i += 1                  
+
+            for i in range(n-1):
+                for j in range(n-2*k-1):
+                    jj = (i+j+k+1)%n
+                    if random() < prob:   
+                        self.ConectaAristas(str(a),str(jj))
+                        
         return self.E
 
     
@@ -222,16 +131,106 @@ class Grafo:
                 x2 = self.x[int(w)]
                 y1 = self.y[int(v)]
                 y2 = self.y[int(w)]                 
-                flecha = "set arrow {:d} from {:f}, {:f} to {:f}, {:f} lt 5 lw {:f} lc rgb '{:s}' nohead".format(num,x1,y1,x2,y2,p,c)
+                flecha = "set arrow {:d} from {:f}, {:f} to {:f}, {:f} lt 2 lw {:f} lc rgb '{:s}' nohead".format(num,x1,y1,x2,y2,p,c)
                 print(flecha, file=aristas)
-                print("Coordenadas")
-                print(x1,y1)
-                             
+                
+                                             
             pie(self.destino, aristas)
         
-   
+    def FloydWarshall(self):
+        d = {}
+        for nod in range(self.n - 1):
+            d[(nod,nod)] = 0 # distancia reflexiva es cero
+            for (vecino,peso) in self.vecinos[str(nod)]: # para vecinos, la distancia es el peso               
+                d[(nod,vecino)] = peso
+        for intermedio in self.vecinos:
+            for desde in self.vecinos:
+                for hasta in self.vecinos:
+                    di = None
+                    if (desde,intermedio) in d:
+                        di = d[(desde, intermedio)]
+                    ih = None
+                    if (intermedio,hasta) in d:
+                        ih = d[(intermedio,hasta)]
+                    if di is not None and ih is not None:
+                        c = di + ih # largo del camino via "i"
+                        if (desde, hasta) not in d or c < d[(desde, hasta)]:
+                            d[(desde, hasta)] = c # mejora al camino actual
+
+           
+        return d
+
+
+    def avgdist(self): #Promedio de las distancias
+        self.d = self.FloydWarshall()
+        self.sumatoria = sum(self.d.values())/ len(self.d)
+        return self.sumatoria
+
+  
+    def clustcoef2(self):
+        
+        g = len(self.vecinos2) - 1
+        valor = 0
+        for v in range(1, g):
+            m = 0
+            for u in self.vecinos2[str(v)]:
+                for w in self.vecinos2[str(v)]:
+                    if u in self.vecinos2[str(w)]:
+                        m+= 1
+            n = len(self.vecinos2[str(v)])
+            if n > 1: 
+                valor += m/(n*(n-1))                
+        return(valor/g)
+    
     def ver(self):
       
-        a = self.posicion
-        return a       
+        a = self.vecinos
+        return a
+
+    def cota(self, n, k, r): #Cota superior no me funciona bien
+        pi = 3.14
+        circulo = 2*(pi)*r*r
         
+        superior = circulo/(len(self.d)/k)-n
+        
+        if superior < self.sumatoria/n:
+            cota = (self.sumatoria/n)/superior              
+            return cota   
+        
+    def PlotDiagrama1(self, plot, diagrama): #Diagrama de tiempos  
+        with open(plot, "w") as diagrama:
+            print("set terminal png truecolor", file = diagrama)
+            print("set output 'Diagrama1.png'", file = diagrama)
+            print("set key off", file = diagrama)
+
+            print("set title 'Diagramas de tiempos logaritmicos'", file = diagrama)
+            print("set xlabel 'Potencias de 2 nodos por grafo'", file = diagrama)
+            print("set ylabel 'Logaritmo de tiempo de procesamiento'", file = diagrama)
+            #set logscale y
+            print("set style fill solid 0.25 border -1", file = diagrama)
+            print("set style boxplot outliers pointtype 7", file = diagrama)
+            print("set style data boxplot", file = diagrama)
+            #f(x) = 150 * exp(x) - 12
+
+            diagrama1 = "plot 'TiempoFWTarea4.txt' using (-8):(log($3)):(0.5):1"                       
+            
+            print(diagrama1, file=diagrama)
+
+    def PlotDiagrama2(self, plot, diagrama): #Diagrama Distancia promedio contra densidad
+        with open(plot, "w") as diagrama:
+            print("set terminal png truecolor", file = diagrama)
+            print("set output 'Diagrama2.png'", file = diagrama)
+            print("set key off", file = diagrama)
+
+            print("set title 'Diagramas de tiempos logaritmicos'", file = diagrama)
+            print("set xlabel 'Potencias de 2 nodos por grafo'", file = diagrama)
+            print("set ylabel 'Logaritmo de tiempo de procesamiento'", file = diagrama)
+            #set logscale y
+            print("set style fill solid 0.25 border -1", file = diagrama)
+            print("set style boxplot outliers pointtype 7", file = diagrama)
+            print("set style data boxplot", file = diagrama)
+            #f(x) = 150 * exp(x) - 12
+
+            diagrama1 = "plot 'ProbTarea4.txt' using (-8):(log($3)):(0.5):1"                       
+            
+            print(diagrama1, file=diagrama)
