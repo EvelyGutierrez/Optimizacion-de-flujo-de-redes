@@ -5,14 +5,15 @@ import collections as col
 from datetime import datetime
 from time import clock
 print("-------------------GRAFOS------------------")
-n = 200
-k = 1
+n = 10
+k = 4
 r = 0.5
-p = 0.0000000002
+p = 0.1
 entro1 = True
-entra = True
+entra = False
 
-cantidadCorridas = 10
+
+cantidadCorridas = 1
 if(entro1 != False):
     with open("TiempoFWTarea4.txt", "a") as f:
 
@@ -26,6 +27,7 @@ if(entro1 != False):
 
             xn = G1.GuardaCirculo("circulo.txt",k, n, p, r, 0.1, 0.5)
             #print(xn)
+            
             G1.PlotCirculo("circulo.plot","circulo.txt")
             G1.Grafica("aristas.plot")
 
@@ -52,27 +54,27 @@ if(entro1 != False):
             print(cotaSuperior)
             #p = p + 0.0000000001
             k = k + 1
-            n = n + 5
+            n = n + 2
             print("---------------------------------------------------------" + str(t))
             print("Valores de N mas 10 :")
             print(n)         
             
-            f.write('{}, {}, {} \n'.format(n, tiempoavgdist, tiempoclustcoef))        
+            f.write('{}  {}  {} \n'.format(n, '%.2f' % tiempoavgdist, '%.2f' % tiempoclustcoef))        
 
 
 if(entro1 != False):
-    G1.PlotDiagrama1("diagrama2.plot", "TiempoFWTarea4")
+    G1.PlotDiagrama1("diagrama1.plot", "TiempoFWTarea4")
 
 if(entra != False):
 
     print("-------------------GRAFOS Prob------------------")
-    n = 50
-    k = 4
+    n = 200
+    k = 1
     r = 0.5
-    p = 0.0000000002
+    p = 0.1
     Resultadosavgdist = []
     Resultadosclustcoef = []
-    cantidadCorridas = 100
+    cantidadCorridas = 10
     with open("ProbTarea4.txt", "a") as f:
     # para las pruebas del grafico de distancias contra densidad variando p
 
@@ -81,43 +83,46 @@ if(entra != False):
             G1 = Grafo()    
             G1.creaNodos(n)
             G1.imprimir("prueba.txt")
-
-
             xn = G1.GuardaCirculo("circulo.txt",k, n, p, r, 0.1, 0.5)
             #print(xn)
             G1.PlotCirculo("circulo.plot","circulo.txt")
             G1.Grafica("aristas.plot")
-
             
             avgdist = G1.avgdist()
             print("Funcion avgdist   ---------------------------------------")
             print(avgdist)
-            Resultadosavgdist.append(avgdist)
+            Resultadosavgdist.append('%.2f' % avgdist)
             print("Resultado de avgdist en tamanno del conjunto :")
-            print(avgdist)
-                    
-           
-          
-
-            
+            print(avgdist)     
             clustcoef = G1.clustcoef2()
             print("Funcion clustcoef   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
             print(clustcoef)
-            Resultadosclustcoef.append(clustcoef)
+            Resultadosclustcoef.append('%.2f' % clustcoef)
             
             cotaSuperior = G1.cota(n, k, r)
             print(cotaSuperior)
-              
-            p = p + 0.0000000001
+            k = k + 1  
+            p = p + 0.1
             print("---------------------------------------------------------" + str(p))
             print("Valores de N mas 10 :")
             print(n)         
             
-            f.write('{}, {}, {} \n'.format(n, avgdist,clustcoef))        
+            f.write('{}  {}  {} \n'.format('%.2f' % p,'%.2f' % avgdist, '%.2f' % clustcoef))
+            with open("DistProb.txt", "a") as g:
+                g.write('{}  {}  {}  {} \n'.format('%.2f' % p, '%.2f' % k, '%.2f' % avgdist, '%.2f' % clustcoef))    
+                G1.PlotDistProb("diagrama3.plot", "DistProb")
 
 print(Resultadosavgdist)
 print(Resultadosclustcoef)
 
 if(entra != False):
-    G1.PlotDiagrama2("diagrama1.plot", "ProbTarea4")
+    G1.PlotDiagrama2("diagrama2.plot", "ProbTarea4")
 
+    
+ 
+  
+
+
+
+
+    

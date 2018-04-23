@@ -7,7 +7,7 @@ import math
 colores = ["black", "blue", "pink", "orange", "red"]
 pesos = [1,2,3]
 
-def cabecera(aristas, eps=False):
+def cabecera(aristas, eps=True):
     if eps:
         print("set term postscript color eps", file = aristas)
         print("set output 'circulo12.eps'", file = aristas)
@@ -199,38 +199,60 @@ class Grafo:
         
     def PlotDiagrama1(self, plot, diagrama): #Diagrama de tiempos  
         with open(plot, "w") as diagrama:
-            print("set terminal png truecolor", file = diagrama)
-            print("set output 'Diagrama1.png'", file = diagrama)
+            print("set term postscript color eps", file = diagrama)
+            print("set output 'Diagrama1.eps'", file = diagrama)
             print("set key off", file = diagrama)
 
-            print("set title 'Diagramas de tiempos logaritmicos'", file = diagrama)
-            print("set xlabel 'Potencias de 2 nodos por grafo'", file = diagrama)
+           
+            print("set xlabel 'Valores de n'", file = diagrama)
             print("set ylabel 'Logaritmo de tiempo de procesamiento'", file = diagrama)
             #set logscale y
             print("set style fill solid 0.25 border -1", file = diagrama)
-            print("set style boxplot outliers pointtype 7", file = diagrama)
+            print("set style line 1 lt 1 linecolor rgb 'blue' lw 2 pt 1", file = diagrama)
             print("set style data boxplot", file = diagrama)
             #f(x) = 150 * exp(x) - 12
 
-            diagrama1 = "plot 'TiempoFWTarea4.txt' using (-8):(log($3)):(0.5):1"                       
+            diagrama1 = "plot 'TiempoFWTarea4.txt' using 1:2 ls 1 title 'Tiempos' with lines "                       
             
             print(diagrama1, file=diagrama)
 
     def PlotDiagrama2(self, plot, diagrama): #Diagrama Distancia promedio contra densidad
         with open(plot, "w") as diagrama:
-            print("set terminal png truecolor", file = diagrama)
-            print("set output 'Diagrama2.png'", file = diagrama)
+            print("set term postscript color eps", file = diagrama)
+            print("set output 'Diagrama2.eps'", file = diagrama)
             print("set key off", file = diagrama)
 
-            print("set title 'Diagramas de tiempos logaritmicos'", file = diagrama)
-            print("set xlabel 'Potencias de 2 nodos por grafo'", file = diagrama)
-            print("set ylabel 'Logaritmo de tiempo de procesamiento'", file = diagrama)
+            
+            print("set xlabel 'Probabilidades'", file = diagrama)
+            print("set ylabel 'Valores de funciones'", file = diagrama)
             #set logscale y
             print("set style fill solid 0.25 border -1", file = diagrama)
-            print("set style boxplot outliers pointtype 7", file = diagrama)
+            print("set style line 1 lt 1 linecolor rgb 'blue' lw 2 pt 1", file = diagrama)
             print("set style data boxplot", file = diagrama)
             #f(x) = 150 * exp(x) - 12
 
-            diagrama1 = "plot 'ProbTarea4.txt' using (-8):(log($3)):(0.5):1"                       
+            diagrama2 = "plot 'ProbTarea4.txt' using 1:2 ls 1 title 'Probabilidad' with lines "                       
             
-            print(diagrama1, file=diagrama)
+            print(diagrama2, file=diagrama)
+
+    def PlotDistProb(self, plot, diagrama): #Diagrama Distancia promedio contra probabilidad
+        with open(plot, "w") as diagrama:
+            print("set term postscript color eps", file = diagrama)
+            print("set output 'Diagrama3.eps'", file = diagrama)
+            print("set key off", file = diagrama)
+
+            
+            print("set xlabel 'Probabilidad P'", file = diagrama)
+            print("set ylabel 'Distancia Normalizada'", file = diagrama)
+            print("set y2label 'Densidad Promedio'", file = diagrama)
+            #set logscale y
+            print("set style fill solid 0.25 border -1", file = diagrama)
+            print("set style line 1 lt 1 linecolor rgb 'red' lw 2 pt 1", file = diagrama)
+            print("set style line 2 lt 1 linecolor rgb 'blue' lw 2 pt 1", file = diagrama)
+            print("set style data boxplot", file = diagrama)
+            #f(x) = 150 * exp(x) - 12
+
+            diagrama3 = "plot 'DistProb.txt' using 1:2 ls 1 title 'Probabilidad' with lines ,  'ProbTarea4.txt' using 1:2 ls 2 title 'Distancias' with lines "
+            #diagrama3 = "plot 'DistProb.txt' using (-8):(log($3)):(0.5):1"                       
+            
+            print(diagrama3, file=diagrama)
