@@ -5,15 +5,15 @@ import collections as col
 from datetime import datetime
 from time import clock
 print("-------------------GRAFOS------------------")
-n = 10
-k = 4
+n = 200
+k = 1
 r = 0.5
 p = 0.1
 entro1 = True
-entra = False
+entra = True
 
 
-cantidadCorridas = 1
+cantidadCorridas = 10
 if(entro1 != False):
     with open("TiempoFWTarea4.txt", "a") as f:
 
@@ -27,7 +27,6 @@ if(entro1 != False):
 
             xn = G1.GuardaCirculo("circulo.txt",k, n, p, r, 0.1, 0.5)
             #print(xn)
-            
             G1.PlotCirculo("circulo.plot","circulo.txt")
             G1.Grafica("aristas.plot")
 
